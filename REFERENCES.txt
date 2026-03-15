@@ -1,0 +1,12 @@
+# Reference books (from FoP Course Outline – B.S. Management and Public Policy)
+
+**Text Book**
+- Downey, A. (2012). Think Python. O'Reilly Media, Inc.
+
+**Reference Books**
+- Matthes, E. (2023). Python Crash Course: A hands-on, project-based introduction to programming.
+- Müller, A. C., & Guido, S. (2016). Introduction to machine learning with Python: a guide for data scientists. O'Reilly Media, Inc.
+
+**Online**
+- https://www.geeksforgeeks.org/python/introduction-to-python/
+- https://www.w3schools.com/python/
