@@ -12,7 +12,7 @@ def add_title_slide(prs, title, subtitle=""):
     slide.shapes.title.text = title
     slide.placeholders[1].text = subtitle
 
-def add_content_slide(prs, title, bullets):
+def add_content_slide(prs, title, bullets, notes=None):
     slide = prs.slides.add_slide(prs.slide_layouts[1])
     slide.shapes.title.text = title
     body = slide.placeholders[1].text_frame
@@ -20,6 +20,10 @@ def add_content_slide(prs, title, bullets):
         p = body.add_paragraph()
         p.text = b
         p.level = 0
+    if notes:
+        notes_slide = slide.notes_slide
+        notes_slide.notes_text_frame.text = notes
+    return slide
 
 def add_ref_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[1])
@@ -55,17 +59,45 @@ def build_session8_pptx():
         "Immutable ordered sequence: (scheme_name, year, budget) — e.g. one fixed record.",
         "Use when: order matters and data should not change (e.g. policy snapshot, KPI row).",
         "Unpacking: scheme_name, year, budget = policy_record.",
-    ])
+    ], notes=(
+        "INTERNALS (for presenter):\n"
+        "• Tuples are immutable: once created, you cannot add/remove/change elements. Python can optimize storage and reuse.\n"
+        "• Stored as a fixed-size sequence in memory; indexing by position is O(1).\n"
+        "• Tuples are hashable if all elements are hashable — so they can be used as dict keys or set elements (e.g. (scheme_id, year)).\n"
+        "• Less memory overhead than lists when the sequence never changes."
+    ))
     add_content_slide(prs, "Sets – unique entities", [
         "Unordered collection of unique elements: e.g. unique beneficiary IDs, districts, departments.",
         "Use when: counting distinct stakeholders, regions covered, or removing duplicate responses.",
         "Operations: union (combined coverage), intersection (common beneficiaries), difference.",
-    ])
+    ], notes=(
+        "INTERNALS (for presenter):\n"
+        "• Sets are implemented with a hash table: each element must be hashable (no lists/dicts inside the set).\n"
+        "• Membership check (x in s) is O(1) on average — very fast for large collections.\n"
+        "• Order is not guaranteed; Python may reorder for efficiency. Do not rely on order.\n"
+        "• Adding/removing is O(1) average. Union, intersection, difference are efficient."
+    ))
     add_content_slide(prs, "Dictionaries – key–value lookups", [
         "Key–value pairs: scheme_id → details, department → head, indicator → target.",
         "Use when: looking up policy details, program metadata, or survey codes by ID.",
         ".keys(), .values(), .items() for reporting and iteration.",
-    ])
+    ], notes=(
+        "INTERNALS (for presenter):\n"
+        "• Dicts are implemented with a hash table: keys must be hashable (e.g. str, int, tuple of hashables).\n"
+        "• Lookup by key (d[key]) is O(1) on average — ideal for scheme_id → details.\n"
+        "• Insertion and deletion by key are also O(1) average.\n"
+        "• From Python 3.7+ dicts preserve insertion order; iterating is in the order keys were added."
+    ))
+    add_content_slide(prs, "Under the hood: Tuples, Sets, Dictionaries", [
+        "Tuple: immutable, fixed sequence; hashable if elements are hashable; O(1) index access.",
+        "Set: hash table; O(1) membership; elements must be hashable; order not guaranteed.",
+        "Dict: hash table; O(1) lookup by key; keys must be hashable; insertion order preserved (3.7+).",
+    ], notes=(
+        "Use this slide + notes to explain internals when students ask \"why is set/dict fast?\" or \"why can't I put a list in a set?\".\n\n"
+        "TUPLES: Immutability allows Python to optimize; no reallocation. Hashable tuples can go in sets/dict keys.\n\n"
+        "SETS: Hash table gives O(1) 'in' check. Uniqueness is enforced by hash + equality. So only hashable types allowed.\n\n"
+        "DICTIONARIES: Same idea — hash(key) determines bucket; O(1) average for get/set/del. .get(key, default) avoids KeyError."
+    ))
     add_content_slide(prs, "When to use which? (management & policy)", [
         "Tuple: one fixed record (e.g. scheme name, financial year, allocated amount).",
         "Set: unique beneficiaries, unique districts in a program, unique response categories.",
