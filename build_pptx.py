@@ -143,17 +143,42 @@ def build_session9_pptx():
         "    '''Optional docstring — e.g. \"Format budget in lakhs for display\"'''",
         "    # body",
         "    return result",
-    ])
+    ], notes=(
+        "INTERNALS (for presenter):\n"
+        "• def is a statement that creates a function object and binds it to the name. The body is not run until the function is called.\n"
+        "• Docstrings (first string after def) are stored in .__doc__ and used by help().\n"
+        "• Indentation defines the body; first dedent ends the function."
+    ))
     add_content_slide(prs, "Parameters and return", [
         "Parameters: e.g. scheme name and year, or a list of grant amounts.",
         "return: e.g. formatted string, summary dict, or lookup result.",
         "Without return: function returns None (avoid for data you need to use).",
-    ])
+    ], notes=(
+        "INTERNALS (for presenter):\n"
+        "• Arguments are passed by object reference: the parameter name refers to the same object. Mutating (e.g. list.append) is visible to the caller; reassigning the name is not.\n"
+        "• return exits the function immediately and sends the value back. Only one return is executed per call.\n"
+        "• Default args are evaluated once at def time; avoid mutable defaults (e.g. def f(x=[]) )."
+    ))
     add_content_slide(prs, "Scope", [
         "Variables inside a function are local (e.g. temp totals, formatted strings).",
         "Variables in the notebook are global; prefer passing data in and returning results.",
         "Keeps policy/data inputs explicit and outputs clear for reporting.",
-    ])
+    ], notes=(
+        "INTERNALS (for presenter):\n"
+        "• LEGB: Local, Enclosing (nested functions), Global, Built-in. Assignment inside a function creates a local name unless declared global.\n"
+        "• Prefer passing inputs as arguments and returning results — makes dependencies clear and functions testable.\n"
+        "• Reading a global is fine; modifying it inside a function requires global declaration (discourage for clarity)."
+    ))
+    add_content_slide(prs, "Under the hood: functions", [
+        "def creates a function object; body runs only when called.",
+        "Arguments passed by object reference; return exits and sends a value back.",
+        "Scope: local names inside the function; prefer pass-in, return-out for clarity.",
+    ], notes=(
+        "Use this when students ask \"when is the body executed?\" or \"why did my list change?\".\n\n"
+        "EXECUTION: def runs once and binds the function; each call runs the body with fresh local names.\n\n"
+        "PASS BY REFERENCE: If you pass a list and append to it, the caller sees the change. If you do param = something_else, the caller's variable is unchanged.\n\n"
+        "RETURN: Can return any type — string, dict, set, tuple, or a tuple of (set, dict) for multiple results."
+    ))
     add_content_slide(prs, "Practical in-class (Colab)", [
         "Session 9 Student notebook: functions for policy/scheme formatting, grant averages, scheme lookup.",
         "Hands-on: e.g. format_budget(amount), summarize_grants(list), get_scheme_by_id(dict, id).",

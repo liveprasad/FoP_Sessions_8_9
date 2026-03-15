@@ -37,7 +37,7 @@ Each PPT ends with a **References** slide (Downey, Matthes, Müller & Guido, Gee
 
 3. **Practice problems (each session)**  
    - **Session 8:** Section 4 (feedback) + 5.1–5.2 = in-class; 5.3–5.7 = homework (5.7 is a challenge: releases by scheme/district using tuples, sets, dicts).  
-   - **Session 9:** Section 5 (summarize_grants) + 6.1–6.2 = in-class; 6.3–6.6 = homework (format_cr, scheme_status, count_above, lookup_indicator, report_line, merge_totals).  
+   - **Session 9:** Section 5 (summarize_grants) + 6.1–6.2 = in-class; 6.3–6.7 = homework (6.7 is a challenge: analyze_releases — functions + tuples, sets, dicts).  
    - **Master** notebooks contain full solutions for every practice problem.
 
 **Solution Colab for students?** Use **one Master notebook** as your single source of truth (you solve/check there). Do *not* share the Master with students during the assignment. Optionally, **after** the homework deadline, you can duplicate the Master, rename it (e.g. `Session8_Solutions.ipynb`), remove any extra commentary, and share that link so students can self-check — this reduces repeat "how do I do 5.7?" and speeds up your grading.
