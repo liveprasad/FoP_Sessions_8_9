@@ -1,33 +1,100 @@
 """
 Generate Session 8 and Session 9 PowerPoint files for FoP (Fundamentals of Programming).
+Educational theme: soft background, navy titles, readable body text.
 Upload the .pptx to Google Slides for editing/presenting.
 """
 from pptx import Presentation
-from pptx.util import Inches
+from pptx.dml.color import RGBColor
+from pptx.util import Inches, Pt
 
 OUTPUT_DIR = "."
+
+# Educational theme (calm, readable, classroom-friendly)
+THEME_BG = RGBColor(245, 248, 252)       # cool off-white / light blue-gray
+THEME_TITLE = RGBColor(21, 67, 108)    # navy
+THEME_SUBTITLE = RGBColor(70, 90, 110) # muted slate
+THEME_BODY = RGBColor(44, 44, 46)      # near-black for bullets
+def _fill_slide_background(slide, color):
+    fill = slide.background.fill
+    fill.solid()
+    fill.fore_color.rgb = color
+
+
+def _style_title_shape(shape, font_size_pt=30, subtitle=False):
+    if not shape.has_text_frame:
+        return
+    tf = shape.text_frame
+    tf.word_wrap = True
+    for para in tf.paragraphs:
+        para.space_after = Pt(6)
+        for run in para.runs:
+            run.font.name = "Calibri"
+            run.font.size = Pt(font_size_pt - 4) if subtitle else Pt(font_size_pt)
+            run.font.bold = not subtitle
+            run.font.color.rgb = THEME_SUBTITLE if subtitle else THEME_TITLE
+
+
+def _style_body_text_frame(tf, font_size_pt=18):
+    tf.word_wrap = True
+    tf.margin_left = Inches(0.05)
+    tf.margin_right = Inches(0.05)
+    tf.margin_top = Inches(0.08)
+    tf.margin_bottom = Inches(0.08)
+    for para in tf.paragraphs:
+        para.space_after = Pt(10)
+        para.line_spacing = 1.15
+        for run in para.runs:
+            run.font.name = "Calibri"
+            run.font.size = Pt(font_size_pt)
+            run.font.color.rgb = THEME_BODY
+
+
+def _apply_theme_to_slide(slide, prs_height, is_title_slide=False):
+    _fill_slide_background(slide, THEME_BG)
+    if slide.shapes.title:
+        _style_title_shape(slide.shapes.title, 32 if is_title_slide else 28, subtitle=False)
+    if is_title_slide and len(slide.placeholders) > 1:
+        ph = slide.placeholders[1]
+        if ph.has_text_frame:
+            _style_title_shape(ph, 20, subtitle=True)
+
 
 def add_title_slide(prs, title, subtitle=""):
     slide = prs.slides.add_slide(prs.slide_layouts[0])
     slide.shapes.title.text = title
     slide.placeholders[1].text = subtitle
+    _apply_theme_to_slide(slide, prs.slide_height, is_title_slide=True)
+
 
 def add_content_slide(prs, title, bullets, notes=None):
     slide = prs.slides.add_slide(prs.slide_layouts[1])
+    _fill_slide_background(slide, THEME_BG)
     slide.shapes.title.text = title
+    _style_title_shape(slide.shapes.title, 26, subtitle=False)
+
     body = slide.placeholders[1].text_frame
-    for b in bullets:
-        p = body.add_paragraph()
+    for i, b in enumerate(bullets):
+        p = body.paragraphs[0] if i == 0 else body.add_paragraph()
         p.text = b
         p.level = 0
+        p.space_after = Pt(10)
+        for run in p.runs:
+            run.font.name = "Calibri"
+            run.font.size = Pt(18)
+            run.font.color.rgb = THEME_BODY
+
     if notes:
         notes_slide = slide.notes_slide
         notes_slide.notes_text_frame.text = notes
     return slide
 
+
 def add_ref_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[1])
+    _fill_slide_background(slide, THEME_BG)
     slide.shapes.title.text = "References"
+    _style_title_shape(slide.shapes.title, 26, subtitle=False)
+
     body = slide.placeholders[1].text_frame
     refs = [
         "Downey, A. (2012). Think Python. O'Reilly Media, Inc.",
@@ -36,10 +103,16 @@ def add_ref_slide(prs):
         "GeeksforGeeks Python: https://www.geeksforgeeks.org/python/",
         "W3Schools Python: https://www.w3schools.com/python/",
     ]
-    for r in refs:
-        p = body.add_paragraph()
+    for i, r in enumerate(refs):
+        p = body.paragraphs[0] if i == 0 else body.add_paragraph()
         p.text = r
         p.level = 0
+        p.space_after = Pt(8)
+        for run in p.runs:
+            run.font.name = "Calibri"
+            run.font.size = Pt(15)
+            run.font.color.rgb = THEME_BODY
+
 
 def build_session8_pptx():
     prs = Presentation()
@@ -119,6 +192,7 @@ def build_session8_pptx():
     prs.save(path)
     print(f"Saved: {path}")
 
+
 def build_session9_pptx():
     prs = Presentation()
     prs.slide_width = Inches(10)
@@ -194,6 +268,7 @@ def build_session9_pptx():
     path = f"{OUTPUT_DIR}/Session9_Functions_Basics.pptx"
     prs.save(path)
     print(f"Saved: {path}")
+
 
 if __name__ == "__main__":
     build_session8_pptx()
